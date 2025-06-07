@@ -1,0 +1,6 @@
+{
+  "name": "IntelliGraph",
+  "description": "IntelliGraph is an AI-powered web application that transforms textual information and code snippets into clear, simple, and aesthetically pleasing diagrams. It aims to enhance understanding and communication by visualizing complex concepts and code workflows.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

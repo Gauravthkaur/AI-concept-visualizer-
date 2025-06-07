@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IntelliGraph</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reactflow@latest/dist/style.css"
+    />
+    <style>
+      body { 
+        margin: 0; 
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; 
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #0f172a; /* slate-900 */
+      }
+      #root { height: 100vh; display: flex; flex-direction: column; }
+
+      /* Custom Scrollbar Styles */
+      ::-webkit-scrollbar {
+        width: 10px; 
+        height: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b; /* slate-800 */
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #4b5563; /* gray-600 */
+        border-radius: 5px;
+        border: 2px solid #1e293b; /* track color as border */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280; /* gray-500 */
+      }
+      /* For Firefox */
+      .custom-scrollbar { /* Apply this class to elements needing FF scrollbar styling */
+        scrollbar-width: thin;
+        scrollbar-color: #4b5563 #1e293b; /* thumb track */
+      }
+
+
+      /* Mermaid specific styling for dark theme in-app */
+      .mermaid-display-area svg .label, 
+      .mermaid-display-area svg text, 
+      .mermaid-display-area svg .node text {
+        fill: #f8fafc !important; /* Ensure high contrast for text on dark nodes */
+        color: #f8fafc !important; 
+      }
+      .mermaid-display-area svg .node path, 
+      .mermaid-display-area svg .node rect, 
+      .mermaid-display-area svg .node circle, 
+      .mermaid-display-area svg .node ellipse, 
+      .mermaid-display-area svg .node polygon {
+        stroke: #64748b; /* Node borders */
+        fill: #1e293b; /* Node background to match app's dark theme elements */
+      }
+      .mermaid-display-area svg .edgePath path {
+        stroke: #38bdf8; /* Edge lines */
+      }
+      .mermaid-display-area svg .arrowheadPath {
+        fill: #38bdf8; /* Arrowheads */
+      }
+       /* Ensure FontAwesome icons render correctly if used in Mermaid */
+      .mermaid-display-area svg .label .fa {
+        font-family: 'Font Awesome 5 Free' !important; 
+      }
+
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "reactflow": "https://esm.sh/reactflow@^11.11.4",
+    "@google/genai": "https://esm.sh/@google/genai@^1.0.1",
+    "@xenova/transformers": "https://esm.sh/@xenova/transformers@^2.17.2",
+    "dom-to-image-more": "https://esm.sh/dom-to-image-more@3.3.0",
+    "jspdf": "https://esm.sh/jspdf@^2.5.1",
+    "html2canvas": "https://esm.sh/html2canvas@^1.4.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.min.js"></script>
+    <script>
+      // Initialize mermaid for in-app display (dark theme)
+      mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'dark', // Using 'dark' or 'base' with themeVariables for dark mode
+        fontFamily: '"Inter", "Segoe UI", "Roboto", "Helvetica Neue", sans-serif',
+        themeVariables: {
+          background: '#1e293b', // Dark background for nodes / overall diagram if not overridden by CSS
+          primaryColor: '#0f172a', // Background of diagram viewport
+          primaryTextColor: '#f8fafc', // Text color on primary background
+          primaryBorderColor: '#334155', // Borders for elements
+          lineColor: '#38bdf8', // Edge color
+          textColor: '#f1f5f9', // General text color within nodes if not overridden
+          
+          // Mindmap specific dark theme variables
+          mindmapLabelColor: '#f8fafc',
+          mindmapNodeBgColor: '#0f172a', // Node background
+          mindmapNodeBorderColor: '#334155', // Node border
+          
+          fontSize: '15px',
+
+          // Ensure flowchart elements are styled for dark theme
+          nodeBorder: '#64748b',
+          mainBkg: '#1e293b', // fill for flowchart nodes
+          nodeTextColor: '#f8fafc',
+        },
+        // For FontAwesome integration if needed:
+        // mermaidAPI.initialize({
+        //   fontFamily: '"Inter", "Font Awesome 5 Free"', // Add FA to font stack
+        // });
+      });
+    </script>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
