@@ -307,45 +307,51 @@ Quiz Questions:
     };
   }
 
-  const fontAwesomeInstructions = `FontAwesome icons in node labels:
-   - The icon syntax \`fa:fa-ICON_NAME\` (e.g., \`fa:fa-book\`, \`fa:fa-server\`) MUST be part of the label string.
-   - **Method 1 (Recommended for clarity): Use a simple node ID (alphanumeric, no spaces or special characters like parentheses).** Then, put the full display text and icon inside the label quotes.
-     Example: \`node1["Guided Media (Wired) fa:fa-network-wired"]\`
-     Example: \`app_layer["Application Layer fa:fa-cogs"]\`
-   - **Method 2 (For mindmap hierarchy where text is the node): If the node's visual text itself forms the node in the mindmap hierarchy:**
-     Quote the entire visual text, including the icon string, if the text contains spaces or special characters.
-     Example: \`"Guided Media (Wired) fa:fa-network-wired"\` (This entire string is one node in the mindmap)
-     Example: \`"Application Layer (OSI Model) fa:fa-cogs"\`
-   - **Crucial point to avoid errors:** If your node text is complex like \`Something (with parens)\`, do NOT write \`Something (with parens) ["fa:fa-icon Text"]\`. This will cause a parse error.
-     Instead, use Method 1: \`someId["Something (with parens) fa:fa-icon Text"]\`
-     Or Method 2: \`"Something (with parens) fa:fa-icon Text"\`
-   - Ensure \`ICON_NAME\` is a valid FontAwesome v5 Free icon name.`;
+  // Node label formatting instructions
+  const nodeLabelInstructions = `Node labels:
+   - Use clear, descriptive text for all nodes
+   - For complex node text (with spaces or special characters), enclose in quotes: \`"Node Text"\`
+   - For better readability, use node IDs with labels: \`nodeId["Node Label"]\``;
+  
+  // Use the instructions in the prompt
 
   const prompt = `
-You are an AI assistant and educational content designer. You generate Mermaid.js mind map syntax and a structured educational explanation.
-Based on the input text, create a response as a single, valid JSON object.
-The JSON object MUST have two top-level keys:
-1. "mermaidSyntax": A string containing valid Mermaid.js syntax for a 'mindmap' diagram.
-   - Syntax MUST start with "mindmap" on a new line.
-   - Use indentation for hierarchy. Nodes on new lines.
-   - ${fontAwesomeInstructions}
-   - Do NOT use \`:::className\` after mind map node definitions.
-2. ${educationalExplanationStructurePrompt.replace('"explanation": A string', '"explanation": "An educational explanation based on the input and generated mind map. Format it with sections as described."')}
+You are an expert educational content designer creating clear, structured Mermaid.js mind maps.
+Generate a JSON response with these keys:
 
-Input Text:
+1. "mermaidSyntax": A well-structured Mermaid mind map with:
+   - Clear hierarchy using 2-space indentation
+   - ALL nodes MUST be connected to the root node
+   - Use descriptive node IDs (e.g., "concept_id[\\"Label\\"]")
+   - Short, focused node labels (1-3 words)
+   - Group related concepts with %% comments
+   - Example structure:
+     "mermaid\nmindmap\n  %% Core Concepts\n  root((Main Idea))\n    core[\\\"Core Concept\\\"]\n      def[\\\"Definition\\\"]\n      imp[\\\"Importance\\\"]\n    \\n  %% Related Topics\n    related[\\\"Related Topic\\\"]\n  "
+   - CRITICAL: Ensure all nodes are properly connected to the root or its children
+   - Never have disconnected nodes at the same level as the root
+
+Node labels formatting:
+- Use clear, descriptive text for all nodes
+- For complex node text (with spaces or special characters), enclose in quotes: \`"Node Text"\`
+- For better readability, use node IDs with labels: \`nodeId["Node Label"]\`
+
+Example response (must be valid JSON):
+{
+  "mermaidSyntax": "mindmap\\n  %% Main Structure\\n  root((Central Concept))\\n    core[\\\"Core Idea\\\"]\\n      sub1[\\\"Key Aspect 1\\\"]\\n        detail1[\\\"Specific Detail\\\"]\\n    \\\"Supporting Concept\\\"\\n  \\n  %% Applications\\n    apps[\\\"Real-World Uses\\\"]\\n      example1[\\\"Example 1\\\"]\\n      example2[\\\"Example 2\\\"]\",
+  "explanation": "Title: Understanding [Central Concept]\\nOverview: This mind map breaks down [Central Concept] into key components for better understanding.\\nKey Concepts:\\n- Core Idea: [Explanation]\\n  - Key Aspect 1: [Details]\\n  - Specific Detail: [More info]\\n- Supporting Concept: [Explanation]\\nRelationships: [How concepts connect and interact]\\nApplications: [Practical examples and use cases]\\nSummary: [Key takeaways and main points]"
+}
+
+Input to analyze:
 ---
 ${inputText}
 ---
 
-Example of the exact JSON structure expected (explanation content is illustrative and must follow the full structure described above):
-{
-  "mermaidSyntax": "mindmap\\n  root((Central Idea))\\n    topic_a_id[\\"Topic A (Concept) fa:fa-lightbulb\\"]\\n      Subtopic A1\\n    \\"Topic B (Another Concept) fa:fa-book\\"",
-  "explanation": "Title: Understanding [Central Idea]\\nIntroduction: This mind map explores [Central Idea] and its key components.\\nMain Explanation:\\n  Topic A (Concept): Explanation for Topic A, relating to its node.\\n    Subtopic A1: Details for Subtopic A1.\\n  Topic B (Another Concept): Explanation for Topic B.\\nDiagram Description: The mind map starts with '[Central Idea]' and branches into 'Topic A (Concept)' (with 'Subtopic A1') and 'Topic B (Another Concept)', visually organizing the information.\\nReal-World Example or Analogy: [Analogy for Central Idea].\\nSummary:\\n  - Point 1 about Central Idea.\\n  - Point 2 about Topic A.\\nQuiz Questions:\\n  1. What is Topic B?"
-}
-
-CRITICAL: The entire response MUST BE ONLY the JSON object. No extra text, comments, or characters before the opening \`{\` or after the closing \`}\`.
-Do NOT use markdown code fences around the JSON.
-Ensure the Mermaid syntax itself is correct. The explanation MUST follow the detailed structured format.
+Additional guidelines:
+- Mermaid syntax must be valid
+- Keep node text concise
+- Use proper escaping for quotes
+- Group related concepts with comments
+- Ensure proper indentation for readability
 `;
 
   try {
@@ -485,17 +491,10 @@ Quiz Questions:
   \`\`\`
 `;
 
-const fontAwesomeInstructionsForSmartMermaid = `FontAwesome icons in node labels:
-   - The icon syntax \`fa:fa-ICON_NAME\` (e.g., \`fa:fa-book\`, \`fa:fa-server\`) MUST be part of the label string.
-   - **Method 1 (Recommended for clarity): Use a simple node ID (alphanumeric, no spaces or special characters like parentheses).** Then, put the full display text and icon inside the label quotes.
-     Example: \`node1["Guided Media (Wired) fa:fa-network-wired"]\`
-   - **Method 2 (For mindmap hierarchy where text is the node): If the node's visual text itself forms the node in the mindmap hierarchy:**
-     Quote the entire visual text, including the icon string, if the text contains spaces or special characters.
-     Example: \`"Guided Media (Wired) fa:fa-network-wired"\`
-   - **Crucial point to avoid errors:** If your node text is complex like \`Something (with parens)\`, do NOT write \`Something (with parens) ["fa:fa-icon Text"]\`. This will cause a parse error.
-     Instead, use Method 1: \`someId["Something (with parens) fa:fa-icon Text"]\`
-     Or Method 2: \`"Something (with parens) fa:fa-icon Text"\`
-   - Ensure \`ICON_NAME\` is a valid FontAwesome v5 Free icon name.`;
+const nodeLabelingInstructions = `Node labels:
+   - Use clear, descriptive text for all nodes
+   - For complex node text (with spaces or special characters), enclose in quotes: \`"Node Text"\`
+   - For better readability, use node IDs with labels: \`nodeId["Node Label"]\``;
 
   const prompt = `
 You are an advanced AI diagramming assistant and an educational content designer. Your task is to analyze the provided input (${module === DiagramModule.CODE ? 'code snippet' : 'textual description'}), select the MOST SUITABLE and SIMPLEST diagram type, generate its data, AND provide a structured educational explanation including your justification for the chosen diagram type.
@@ -517,7 +516,7 @@ The JSON object must contain:
 - ${smartExplanationStructurePrompt}
 - EITHER "mermaidSyntax" (string) if "${SimpleDiagramType.MERMAID_MIND_MAP}" was chosen.
   - Mermaid syntax must be valid, start with "mindmap", use indentation.
-  - ${fontAwesomeInstructionsForSmartMermaid}
+  - ${nodeLabelingInstructions}
   - No \`:::className\` after mind map node definitions.
 - OR "diagramData" (object with "nodes" and "edges" arrays) for all other types.
   - Nodes: "id", "data" (with "label", optional "iconKeyword"), "position". Concise labels. Simple "iconKeyword" if applicable.
@@ -528,7 +527,7 @@ Example for Mermaid Mind Map (explanation content is illustrative and must follo
 {
   "suggestedDiagramType": "${SimpleDiagramType.MERMAID_MIND_MAP}",
   ${smartExplanationStructurePrompt.replace('"explanation": A string', '"explanation": "Justification for Diagram Choice: A Mermaid Mind Map was chosen..."').replace(/\s*Example explanation for smart selection:[\s\S]*/, '')},
-  "mermaidSyntax": "mindmap\\n  root((Main Idea))\\n    section1_id[\\"Section 1 (Details) fa:fa-folder\\"]\\n      Detail A\\n    \\"Section 2 (Overview) fa:fa-info-circle\\""
+  "mermaidSyntax": "mindmap\\n  root((Main Idea))\\n    section1_id[\\\"Section 1 (Details)\\\"]\\n      Detail A\\n    \\\\\"Section 2 (Overview)\\\"\"
 }
 
 Example for Simple Flowchart (explanation content is illustrative and must follow the full structure described above):

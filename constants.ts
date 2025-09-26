@@ -47,7 +47,7 @@ export const DEFAULT_PROMPT_CODE =
   }
 }`;
 
-export const GEMINI_MODEL_TEXT = 'gemini-2.5-flash-preview-04-17';
-export const GEMINI_MODEL_CODE = 'gemini-2.5-flash-preview-04-17';
+export const GEMINI_MODEL_TEXT = 'gemini-2.0-flash';
+export const GEMINI_MODEL_CODE = 'gemini-2.0-flash';
 // GEMINI_MODEL_IMAGE is no longer used for MERMAID_MIND_MAP
 // export const GEMINI_MODEL_IMAGE = 'imagen-3.0-generate-002';
